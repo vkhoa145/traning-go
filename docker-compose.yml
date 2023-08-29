@@ -1,0 +1,31 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ./:/app
+    ports:
+      - ${EXPOSE_PORT}:${APP_PORT}
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - clean_architecture
+
+  db:
+    image: postgres:14
+    command: ["postgres", "-c", "log_statement=all"]
+    ports:
+      - "5435:5432"
+    volumes:
+      - ./docker/container_data/pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    networks:
+      - clean_architecture
+
+networks:
+  clean_architecture:
+    driver: bridge
