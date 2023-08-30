@@ -18,8 +18,9 @@ type HTTPConfig struct {
 }
 
 type Config struct {
-	DB   DBConfig
-	HTTP HTTPConfig
+	DB            DBConfig
+	HTTP          HTTPConfig
+	SIGNED_STRING string
 }
 
 func LoadConfig() *Config {
@@ -37,5 +38,6 @@ func LoadConfig() *Config {
 			Port:       os.Getenv("APP_PORT"),
 			ExposePort: os.Getenv("EXPOSE_PORT"),
 		},
+		SIGNED_STRING: os.Getenv("SIGNED_STRING"),
 	}
 }
