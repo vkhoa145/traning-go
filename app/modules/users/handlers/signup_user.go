@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"reflect"
 	"time"
 
 	"github.com/go-playground/validator"
@@ -25,7 +26,9 @@ func (h *UserHandlers) SignUpUser(config *config.Config) fiber.Handler {
 			errors := map[string]string{}
 			for _, err := range err.(validator.ValidationErrors) {
 				A := err.Field()
-				errors[A] = err.Tag()
+				field, _ := reflect.TypeOf(payload).FieldByName(A)
+				jsonTag := field.Tag.Get("json")
+				errors[jsonTag] = err.Tag()
 			}
 
 			ctx.Status(http.StatusUnprocessableEntity)
