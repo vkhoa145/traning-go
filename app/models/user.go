@@ -8,11 +8,12 @@ import (
 
 type User struct {
 	gorm.Model
-	FirstName string `gorm:"type:varchar(255)" json:"first_name"`
-	LastName  string `gorm:"type:varchar(255)" json:"last_name"`
-	Email     string `gorm:"type:varchar(255)" json:"email"`
-	Password  string `gorm:"type:varchar(255)" json:"password"`
-	Phone     string `gorm:"type:varchar(15)" json:"phone"`
+	FirstName  string     `gorm:"type:varchar(255)" json:"first_name"`
+	LastName   string     `gorm:"type:varchar(255)" json:"last_name"`
+	Email      string     `gorm:"type:varchar(255)" json:"email"`
+	Password   string     `gorm:"type:varchar(255)" json:"password"`
+	Phone      string     `gorm:"type:varchar(15)" json:"phone"`
+	Categories []Category `gorm:"foreignKey:UserId"`
 }
 
 func (User) TableName() string {
@@ -48,9 +49,5 @@ func FilterUserRecord(user *User) *UserResponse {
 		ID:        user.ID,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
-		Email:     user.Email,
-		Phone:     user.Phone,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
 	}
 }

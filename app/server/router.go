@@ -7,6 +7,10 @@ import (
 	handlerUser "github.com/vkhoa145/go-training/app/modules/users/handlers"
 	repositoryUser "github.com/vkhoa145/go-training/app/modules/users/repositories"
 	userUseCase "github.com/vkhoa145/go-training/app/modules/users/usecase"
+
+	handlerCategory "github.com/vkhoa145/go-training/app/modules/categories/handlers"
+	repositoryCategory "github.com/vkhoa145/go-training/app/modules/categories/repositories"
+	categoryUseCase "github.com/vkhoa145/go-training/app/modules/categories/usecase"
 )
 
 func SetupRoutes(server *Server) {
@@ -22,4 +26,11 @@ func SetupRoutes(server *Server) {
 	user.Post("/signup", userHandler.SignUpUser(server.Config))
 	user.Post("/signin", userHandler.SignInUser(server.Config))
 	user.Get("/profile", authMiddleware, userHandler.GetUser())
+
+	// Category
+	categoryRepo := repositoryCategory.NewCategoryRepo(server.DB)
+	categoryUseCase := categoryUseCase.NewCategoryUseCase(categoryRepo)
+	categoryHandler := handlerCategory.NewCategoryHandlers(categoryUseCase, categoryRepo)
+
+	api.Post("/categories", categoryHandler.CreateCategory())
 }
