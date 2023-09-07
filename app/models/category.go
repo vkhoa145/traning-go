@@ -20,14 +20,16 @@ type CategoryResponse struct {
 	ID          uint   `json:"id,omitempty"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	UserId      uint   `json:"user_id"`
+}
+
+func (Category) TableName() string {
+	return "category"
 }
 
 func FilterCategoryRecord(cat *Category) *CategoryResponse {
 	return &CategoryResponse{
 		ID:          cat.ID,
 		Name:        cat.Name,
-		Description: cat.Name,
-		UserId:      cat.UserId,
+		Description: cat.Description,
 	}
 }

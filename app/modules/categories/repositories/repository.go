@@ -6,7 +6,7 @@ import (
 )
 
 type CategoryRepoInterface interface {
-	CreateCategory(data *models.CreateCategoryInput) (*models.Category, error)
+	CreateCategory(data *models.CreateCategoryInput, userId uint) (*models.Category, error)
 }
 
 type CategoryRepo struct {

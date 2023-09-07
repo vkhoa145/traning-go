@@ -7,7 +7,7 @@ import (
 )
 
 type CategoryUseCaseInterface interface {
-	CreateCategory(ctx *fiber.Ctx, payload *models.CreateCategoryInput) (*models.CategoryResponse, error)
+	CreateCategory(ctx *fiber.Ctx, payload *models.CreateCategoryInput, userId uint) (*models.CategoryResponse, error)
 }
 
 type CategoryUseCase struct {
