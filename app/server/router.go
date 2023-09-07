@@ -17,7 +17,7 @@ func SetupRoutes(server *Server) {
 	// Auth
 	userRepo := repositoryUser.NewUserRepo(server.DB)
 	userUseCase := userUseCase.NewUserUseCase(userRepo)
-	userHandler := handlerUser.NewUserHandlers(userUseCase, userRepo)
+	userHandler := handlerUser.NewUserHandlers(userUseCase)
 
 	authMiddleware := middlewares.NewAuthMiddleware(server.Config.SIGNED_STRING)
 
@@ -30,7 +30,8 @@ func SetupRoutes(server *Server) {
 	// Category
 	categoryRepo := repositoryCategory.NewCategoryRepo(server.DB)
 	categoryUseCase := categoryUseCase.NewCategoryUseCase(categoryRepo)
-	categoryHandler := handlerCategory.NewCategoryHandlers(categoryUseCase, categoryRepo)
+	categoryHandler := handlerCategory.NewCategoryHandlers(categoryUseCase)
 
-	api.Post("/categories", categoryHandler.CreateCategory())
+	categories := api.Group("/categories")
+	categories.Post("/create", authMiddleware, categoryHandler.CreateCategory())
 }

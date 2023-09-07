@@ -9,6 +9,7 @@ import (
 type UseCase interface {
 	SignUpUser(ctx *fiber.Ctx, payload *models.SignUpInput) (*models.UserResponse, error)
 	SignInUser(ctx *fiber.Ctx, payload *models.SignInInput) (*models.UserResponse, error)
+	GetUser(ctx *fiber.Ctx, email string) (*models.UserResponse, error)
 }
 
 type UserUseCase struct {
