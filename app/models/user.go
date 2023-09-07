@@ -49,5 +49,7 @@ func FilterUserRecord(user *User) *UserResponse {
 		ID:        user.ID,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
+		Email:     user.Email,
+		Phone:     user.Phone,
 	}
 }
