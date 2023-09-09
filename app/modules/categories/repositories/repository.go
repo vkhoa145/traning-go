@@ -7,6 +7,10 @@ import (
 
 type CategoryRepoInterface interface {
 	CreateCategory(data *models.CreateCategoryInput) (*models.Category, error)
+	GetCategoryById(id float64, userId float64) (*models.Category, error)
+	UpdateCategory(data *models.UpdateCategoryInput, category *models.Category) (*models.Category, error)
+	DeleteCategory(existedCategory *models.Category) (*models.Category, error)
+	GetAllCategories(userId float64) ([]models.Category, error)
 }
 
 type CategoryRepo struct {

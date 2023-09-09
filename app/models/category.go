@@ -11,9 +11,20 @@ type Category struct {
 	UserId      uint
 }
 
+func (Category) TableName() string {
+	return "categories"
+}
+
 type CreateCategoryInput struct {
 	Name        string `json:"name" validate:"required"`
-	Description string `json:"description"`
+	Description string `json:"description" validate:"required"`
+	UserId      uint   `json:"user_id" validates: "required"`
+}
+
+type UpdateCategoryInput struct {
+	Name        string `json:"name" validate:"required"`
+	Description string `json:"description" validate:"required"`
+	UserId      uint   `json:"user_id" validates: "required"`
 }
 
 type CategoryResponse struct {
@@ -27,7 +38,9 @@ func FilterCategoryRecord(cat *Category) *CategoryResponse {
 	return &CategoryResponse{
 		ID:          cat.ID,
 		Name:        cat.Name,
-		Description: cat.Name,
+		Description: cat.Description,
 		UserId:      cat.UserId,
 	}
 }
+
+var Categories []Category

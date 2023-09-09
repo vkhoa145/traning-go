@@ -9,6 +9,7 @@ type UserRepoInterface interface {
 	CheckEmailExisting(email string) bool
 	CreateUser(data *models.SignUpInput) (*models.User, error)
 	GetUserByEmail(email string) (*models.User, error)
+	GetUserById(id float64) (*models.User, error)
 }
 
 type UserRepo struct {

@@ -15,9 +15,14 @@ func (h *UserHandlers) GetUser() fiber.Handler {
 
 		user := ctx.Locals("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
+
+		// why cannot get by email from claims
 		email := claims["email"].(string)
-		user1, err := h.UserRepo.GetUserByEmail(email)
-		fmt.Println(user1)
+		// why id must be float64
+		id := claims["id"].(float64)
+		fmt.Println("user email", email)
+		// user1, err := h.UserRepo.GetUserByEmail(email)
+		user2, err := h.UserRepo.GetUserById(id)
 
 		if err != nil {
 			ctx.Status(http.StatusNotFound)
@@ -25,6 +30,7 @@ func (h *UserHandlers) GetUser() fiber.Handler {
 		}
 
 		ctx.Status(http.StatusCreated)
-		return ctx.JSON(&fiber.Map{"status": http.StatusCreated, "data": models.FilterUserRecord(user1), "error": nil})
+		// return ctx.JSON(&fiber.Map{"status": http.StatusCreated, "data": models.FilterUserRecord(user1), "error": nil})
+		return ctx.JSON(&fiber.Map{"status": http.StatusCreated, "data": models.FilterUserRecord(user2), "error": nil})
 	}
 }

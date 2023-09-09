@@ -8,6 +8,8 @@ import (
 
 type CategoryUseCaseInterface interface {
 	CreateCategory(ctx *fiber.Ctx, payload *models.CreateCategoryInput) (*models.CategoryResponse, error)
+	UpdateCategory(ctx *fiber.Ctx, payload *models.UpdateCategoryInput, existedCategory *models.Category) (*models.CategoryResponse, error)
+	DeleteCategory(ctx *fiber.Ctx, existedCategory *models.Category) (*models.CategoryResponse, error)
 }
 
 type CategoryUseCase struct {

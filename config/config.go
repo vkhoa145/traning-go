@@ -3,12 +3,13 @@ package config
 import "os"
 
 type DBConfig struct {
-	User     string
-	Password string
-	Driver   string
-	Name     string
-	Host     string
-	Port     string
+	User       string
+	Password   string
+	Driver     string
+	Name       string
+	Host       string
+	Port       string
+	ExposePort string
 }
 
 type HTTPConfig struct {
@@ -26,12 +27,13 @@ type Config struct {
 func LoadConfig() *Config {
 	return &Config{
 		DB: DBConfig{
-			User:     os.Getenv("DB_USER"),
-			Password: os.Getenv("DB_PASSWORD"),
-			Driver:   os.Getenv("DB_DRIVER"),
-			Name:     os.Getenv("DB_NAME"),
-			Host:     os.Getenv("DB_HOST"),
-			Port:     os.Getenv("DB_PORT"),
+			User:       os.Getenv("DB_USER"),
+			Password:   os.Getenv("DB_PASSWORD"),
+			Driver:     os.Getenv("DB_DRIVER"),
+			Name:       os.Getenv("DB_NAME"),
+			Host:       os.Getenv("DB_HOST"),
+			Port:       os.Getenv("DB_PORT"),
+			ExposePort: os.Getenv("EXPOSE_DB_PORT"),
 		},
 		HTTP: HTTPConfig{
 			Host:       os.Getenv("APP_HOST"),

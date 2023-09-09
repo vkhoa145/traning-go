@@ -32,5 +32,9 @@ func SetupRoutes(server *Server) {
 	categoryUseCase := categoryUseCase.NewCategoryUseCase(categoryRepo)
 	categoryHandler := handlerCategory.NewCategoryHandlers(categoryUseCase, categoryRepo)
 
-	api.Post("/categories", categoryHandler.CreateCategory())
+	api.Post("/categories", authMiddleware, categoryHandler.CreateCategory())
+	api.Get("/categories", authMiddleware, categoryHandler.GetAllCategories())
+	api.Get("/categories/:id", authMiddleware, categoryHandler.GetCategoryById())
+	api.Put("/categories/:id", authMiddleware, categoryHandler.UpdateCategory())
+	api.Delete("/categories/:id", authMiddleware, categoryHandler.DeleteCategory())
 }

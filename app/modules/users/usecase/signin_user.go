@@ -9,7 +9,6 @@ import (
 )
 
 func (u UserUseCase) SignInUser(ctx *fiber.Ctx, payload *models.SignInInput) (*models.UserResponse, error) {
-
 	user, err := u.userRepo.GetUserByEmail(payload.Email)
 
 	if user == nil {
