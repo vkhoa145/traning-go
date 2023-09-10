@@ -12,6 +12,5 @@ func (cat CategoryUseCase) UpdateCategory(ctx *fiber.Ctx, payload *models.Update
 		return nil, err
 	}
 
-	// return models.FilterCategoryRecord(updateCategory), nil
 	return models.FilterCategoryRecord(existedCategory), nil
 }

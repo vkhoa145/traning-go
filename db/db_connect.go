@@ -23,6 +23,7 @@ func Init(cfg *config.Config) *gorm.DB {
 	db.AutoMigrate(
 		&models.User{},
 		&models.Category{},
+		&models.Book{},
 	)
 
 	if err != nil {

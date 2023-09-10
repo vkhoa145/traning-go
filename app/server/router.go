@@ -11,6 +11,10 @@ import (
 	handlerCategory "github.com/vkhoa145/go-training/app/modules/categories/handlers"
 	repositoryCategory "github.com/vkhoa145/go-training/app/modules/categories/repositories"
 	categoryUseCase "github.com/vkhoa145/go-training/app/modules/categories/usecase"
+
+	handlerBook "github.com/vkhoa145/go-training/app/modules/books/handlers"
+	repositoryBook "github.com/vkhoa145/go-training/app/modules/books/repositories"
+	bookUseCase "github.com/vkhoa145/go-training/app/modules/books/usecase"
 )
 
 func SetupRoutes(server *Server) {
@@ -37,4 +41,14 @@ func SetupRoutes(server *Server) {
 	api.Get("/categories/:id", authMiddleware, categoryHandler.GetCategoryById())
 	api.Put("/categories/:id", authMiddleware, categoryHandler.UpdateCategory())
 	api.Delete("/categories/:id", authMiddleware, categoryHandler.DeleteCategory())
+
+	// Book
+	bookRepo := repositoryBook.NewBookRepo(server.DB)
+	bookUseCase := bookUseCase.NewBookUseCase(bookRepo)
+	bookHandler := handlerBook.NewBookHandlers(bookUseCase, bookRepo)
+
+	api.Post("/categories/:id/books", authMiddleware, bookHandler.CreateBook())
+	api.Get("/books/:id", bookHandler.GetBookById())
+	api.Put("/categories/:id/books/:book_id", authMiddleware, bookHandler.UpdateBook())
+	api.Delete("/books/:id", authMiddleware, bookHandler.DeleteBook())
 }
