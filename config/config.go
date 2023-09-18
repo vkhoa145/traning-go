@@ -19,9 +19,12 @@ type HTTPConfig struct {
 }
 
 type Config struct {
-	DB            DBConfig
-	HTTP          HTTPConfig
-	SIGNED_STRING string
+	DB                  DBConfig
+	HTTP                HTTPConfig
+	SIGNED_STRING       string
+	EmailSenderName     string
+	EmailSenderAddress  string
+	EmailSenderPassword string
 }
 
 func LoadConfig() *Config {
@@ -40,6 +43,9 @@ func LoadConfig() *Config {
 			Port:       os.Getenv("APP_PORT"),
 			ExposePort: os.Getenv("EXPOSE_PORT"),
 		},
-		SIGNED_STRING: os.Getenv("SIGNED_STRING"),
+		SIGNED_STRING:       os.Getenv("SIGNED_STRING"),
+		EmailSenderName:     os.Getenv("EMAIL_SENDER_NAME"),
+		EmailSenderAddress:  os.Getenv("EMAIL_SENDER_ADDRESS"),
+		EmailSenderPassword: os.Getenv("EMAIL_SENDER_PASSWORD"),
 	}
 }
