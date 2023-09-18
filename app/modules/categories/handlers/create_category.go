@@ -1,13 +1,16 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"reflect"
+	"strconv"
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/vkhoa145/go-training/app/mails"
 	"github.com/vkhoa145/go-training/app/models"
+	"github.com/vkhoa145/go-training/config"
 )
 
 func (h *CategoryHandlers) CreateCategory() fiber.Handler {
@@ -33,15 +36,33 @@ func (h *CategoryHandlers) CreateCategory() fiber.Handler {
 			return ctx.JSON(&fiber.Map{"status": http.StatusUnprocessableEntity, "message": "Unprocessable Content", "errors": errors})
 		}
 
-		user := ctx.Locals("user").(*jwt.Token)
-		claims := user.Claims.(jwt.MapClaims)
-		id := claims["id"].(float64)
-		payload.UserId = uint(id)
+		userId := ctx.Get("User_id")
+		fmt.Println("user from header", userId)
+		userIdFloat, err := strconv.ParseFloat(userId, 64)
+		if err != nil {
+			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err.Error()})
+		}
+
+		payload.UserId = uint(userIdFloat)
 
 		createdCategory, err := h.categoryUseCase.CreateCategory(ctx, &payload)
 		if err != nil {
 			ctx.Status(http.StatusBadRequest)
 			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err.Error()})
+		}
+
+		sender := mails.NewGmailSender(config.LoadConfig().EmailSenderName, config.LoadConfig().EmailSenderAddress, config.LoadConfig().EmailSenderPassword)
+		subject := "a test email"
+		content := `
+		<h1>Hello World</h1>
+		<p>This is a test message from <a href="http://google.com">Link</a></p>
+		`
+		to := []string{"khoavodang1451997@gmail.com"}
+		// attachFiles := []string{"../../README.md"}
+		err1 := sender.SendMail(subject, content, to, nil, nil, nil)
+		if err1 != nil {
+			fmt.Println("mail err", err1)
+			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err1.Error()})
 		}
 
 		ctx.Status(http.StatusCreated)

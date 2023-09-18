@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 func (h *CategoryHandlers) DeleteCategory() fiber.Handler {
@@ -16,12 +15,13 @@ func (h *CategoryHandlers) DeleteCategory() fiber.Handler {
 			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid book ID"})
 		}
 
-		user := ctx.Locals("user").(*jwt.Token)
-		claims := user.Claims.(jwt.MapClaims)
-		id := claims["id"].(float64)
-		userId := uint(id)
+		userId := ctx.Get("User_id")
+		userIdFloat, err := strconv.ParseFloat(userId, 64)
+		if err != nil {
+			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err.Error()})
+		}
 
-		existedCategory, existedCategoryErr := h.categoryRepo.GetCategoryById(categoryID, float64(userId))
+		existedCategory, existedCategoryErr := h.categoryRepo.GetCategoryById(categoryID, userIdFloat)
 		if existedCategoryErr != nil {
 			ctx.Status(http.StatusBadRequest)
 			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": existedCategoryErr.Error()})

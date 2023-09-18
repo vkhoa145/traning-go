@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/vkhoa145/go-training/app/middlewares"
 	"github.com/vkhoa145/go-training/app/models"
 	"github.com/vkhoa145/go-training/config"
 )
@@ -25,19 +25,18 @@ func (h *UserHandlers) SignInUser(config *config.Config) fiber.Handler {
 			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err.Error()})
 		}
 
-		claims := jwt.MapClaims{
-			"id":    user.ID,
-			"email": user.Email,
-			"exp":   time.Now().Add(time.Hour * 72).Unix(),
-		}
-
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-		t, err := token.SignedString([]byte(config.SIGNED_STRING))
+		t, err := middlewares.CreateAccessToken(user, config.SIGNED_STRING, 24)
 		if err != nil {
 			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err.Error()})
 		}
 
+		// ctx.Request().Header.Set("Authorization", t)
+		ctx.Set("Authorization", t)
+		ctx.Cookie(&fiber.Cookie{
+			Name:    "access_token",
+			Value:   t,
+			Expires: time.Now().Add(time.Hour * 1),
+		})
 		ctx.Status(http.StatusOK)
 		return ctx.JSON(&fiber.Map{"status": http.StatusOK, "token": t, "error": nil})
 	}

@@ -3,11 +3,10 @@ package handlers
 import (
 	"net/http"
 	"reflect"
-	"time"
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/vkhoa145/go-training/app/middlewares"
 	"github.com/vkhoa145/go-training/app/models"
 	"github.com/vkhoa145/go-training/config"
 )
@@ -42,20 +41,22 @@ func (h *UserHandlers) SignUpUser(config *config.Config) fiber.Handler {
 			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err.Error()})
 		}
 
-		claims := jwt.MapClaims{
-			"id":    createdUser.ID,
-			"email": createdUser.Email,
-			"exp":   time.Now().Add(time.Hour * 72).Unix(),
-		}
+		// claims := jwt.MapClaims{
+		// 	"id":    createdUser.ID,
+		// 	"email": createdUser.Email,
+		// 	"exp":   time.Now().Add(time.Hour * 72).Unix(),
+		// }
 
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+		// token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-		t, err := token.SignedString([]byte(config.SIGNED_STRING))
+		// t, err := token.SignedString([]byte(config.SIGNED_STRING))
+		token, err := middlewares.CreateAccessToken(createdUser, config.SIGNED_STRING, 24)
+
 		if err != nil {
 			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err.Error()})
 		}
 
 		ctx.Status(http.StatusCreated)
-		return ctx.JSON(&fiber.Map{"status": http.StatusCreated, "token": t, "error": nil})
+		return ctx.JSON(&fiber.Map{"status": http.StatusCreated, "token": token, "error": nil})
 	}
 }
