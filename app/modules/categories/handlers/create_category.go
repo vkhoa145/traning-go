@@ -37,7 +37,6 @@ func (h *CategoryHandlers) CreateCategory() fiber.Handler {
 		}
 
 		userId := ctx.Get("User_id")
-		fmt.Println("user from header", userId)
 		userIdFloat, err := strconv.ParseFloat(userId, 64)
 		if err != nil {
 			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err.Error()})
@@ -58,7 +57,6 @@ func (h *CategoryHandlers) CreateCategory() fiber.Handler {
 		<p>This is a test message from <a href="http://google.com">Link</a></p>
 		`
 		to := []string{"khoavodang1451997@gmail.com"}
-		// attachFiles := []string{"../../README.md"}
 		err1 := sender.SendMail(subject, content, to, nil, nil, nil)
 		if err1 != nil {
 			fmt.Println("mail err", err1)

@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/vkhoa145/go-training/app/models"
 )
 
@@ -39,10 +38,12 @@ func (h *BookHandlers) CreateBook() fiber.Handler {
 			return ctx.JSON(&fiber.Map{"status": http.StatusUnprocessableEntity, "message": "Unprocessable Content", "errors": errors})
 		}
 
-		user := ctx.Locals("user").(*jwt.Token)
-		claims := user.Claims.(jwt.MapClaims)
-		id := claims["id"].(float64)
-		payload.UserId = uint(id)
+		userId := ctx.Get("User_id")
+		userIdFloat, err := strconv.ParseFloat(userId, 64)
+		if err != nil {
+			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err.Error()})
+		}
+		payload.UserId = uint(userIdFloat)
 		payload.CategoryId = uint(categoryID)
 
 		createdBook, err := h.bookUseCase.CreateBook(ctx, &payload)

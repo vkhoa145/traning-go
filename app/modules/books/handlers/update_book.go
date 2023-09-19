@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/vkhoa145/go-training/app/models"
 )
 
@@ -30,10 +29,12 @@ func (h *BookHandlers) UpdateBook() fiber.Handler {
 		}
 		payload.CategoryId = uint(categoryID)
 
-		user := ctx.Locals("user").(*jwt.Token)
-		claims := user.Claims.(jwt.MapClaims)
-		id := claims["id"].(float64)
-		userId := uint(id)
+		userId := ctx.Get("User_id")
+		userIdFloat, err := strconv.ParseFloat(userId, 64)
+		if err != nil {
+			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": err.Error()})
+		}
+		Id := uint(userIdFloat)
 
 		existedBook, existedBookErr := h.bookRepo.GetBookById(bookID)
 		if existedBookErr != nil {
@@ -41,7 +42,7 @@ func (h *BookHandlers) UpdateBook() fiber.Handler {
 			return ctx.JSON(&fiber.Map{"status": http.StatusBadRequest, "error": existedBookErr.Error()})
 		}
 
-		if existedBook.UserId != userId {
+		if existedBook.UserId != Id {
 			ctx.Status(http.StatusForbidden)
 			return ctx.JSON(&fiber.Map{"status": http.StatusForbidden, "error": "Unauthorized"})
 		}
