@@ -5,27 +5,21 @@ services:
       dockerfile: docker/Dockerfile
     volumes:
       - ./:/app
+    tty: true
     ports:
       - ${EXPOSE_PORT}:${APP_PORT}
-    depends_on:
-      - db
     env_file:
       - .env
-    networks:
-      - clean_architecture
 
   db:
-    image: postgres:14
-    command: ["postgres", "-c", "log_statement=all"]
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
-      - "5435:5432"
-    volumes:
-      - ./docker/container_data/pgdata:/var/lib/postgresql/data
+      - ${EXPOSE_DB_PORT}:${DB_PORT}
     env_file:
       - .env
-    networks:
-      - clean_architecture
-
-networks:
-  clean_architecture:
-    driver: bridge
+    volumes:
+      - ./docker/container_data/pgdata:/var/lib/postgresql/data

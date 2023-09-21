@@ -1,2 +1,5 @@
 docker/container_data/
 main
+
+.env
+docker-compose.yml
